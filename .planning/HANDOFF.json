@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T10:02:49.005Z",
+  "timestamp": "2026-06-22T10:09:10.474Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -17,14 +17,10 @@
   "decisions": [],
   "uncommitted_files": [
     {
-      "status": "??",
-      "path": ".planning/"
-    },
-    {
-      "status": "??",
-      "path": "docs/"
+      "status": "M",
+      "path": "docs/superpowers/specs/2026-06-22-ai-automation-diagnostic-design.md"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n9637d6d Initial commit"
+  "context_notes": "Recent commits:\n4b0e357 docs: add AI Automation Diagnostic design document\n9637d6d Initial commit"
 }
