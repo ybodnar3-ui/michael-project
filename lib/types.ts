@@ -14,3 +14,19 @@ export interface ChatResponse {
   reply: string;
   done: boolean;
 }
+
+export interface AutomationOpportunity {
+  title: string;
+  problem: string;
+  solution: string;
+  ai_capability: string;
+  estimated_impact: string;
+  request_to_specialist: string;
+}
+
+export interface Report {
+  business_summary: string;
+  automation_opportunities: AutomationOpportunity[];
+  priority_recommendation: string;
+  next_step: string;
+}
