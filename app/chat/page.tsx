@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { ChatMessage, Language } from "@/lib/types";
+import type { ChatMessage, Language, Report } from "@/lib/types";
+import { ReportView } from "@/components/ReportView";
 
 const KICKOFF: Record<Language, string> = {
   uk: "Почати",
@@ -17,6 +18,30 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [report, setReport] = useState<Report | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+
+  async function generateReport() {
+    setReportLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/report", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ language, messages }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(`Помилка звіту ${res.status}: ${data?.error ?? "unknown"}`);
+        return;
+      }
+      setReport(data.report ?? null);
+    } catch {
+      setError("Не вдалося згенерувати звіт.");
+    } finally {
+      setReportLoading(false);
+    }
+  }
 
   async function send(history: ChatMessage[]) {
     setLoading(true);
@@ -51,6 +76,7 @@ export default function ChatPage() {
     const history: ChatMessage[] = [{ role: "user", content: KICKOFF[language] }];
     setMessages(history);
     setDone(false);
+    setReport(null);
     void send(history);
   }
 
@@ -131,6 +157,19 @@ export default function ChatPage() {
           </div>
         )}
       </div>
+
+      {done && !report && (
+        <button
+          type="button"
+          onClick={generateReport}
+          disabled={reportLoading}
+          className="rounded bg-green-600 px-4 py-2 font-medium text-white disabled:opacity-50"
+        >
+          {reportLoading ? "Готую звіт…" : "Згенерувати звіт"}
+        </button>
+      )}
+
+      {report && <ReportView report={report} />}
 
       <div className="flex gap-2">
         <input
