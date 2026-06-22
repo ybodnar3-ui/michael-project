@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import { ReportView } from "@/components/ReportView";
 import type { Report } from "@/lib/types";
 
@@ -19,14 +20,22 @@ const report: Report = {
   next_step: "Обговорити впровадження.",
 };
 
+function setup() {
+  return render(
+    <LanguageProvider>
+      <ReportView report={report} />
+    </LanguageProvider>
+  );
+}
+
 describe("ReportView", () => {
   it("renders the business summary", () => {
-    render(<ReportView report={report} />);
+    setup();
     expect(screen.getByText(/Стоматологія на 3 крісла/)).toBeInTheDocument();
   });
 
   it("renders each opportunity with its request to specialist", () => {
-    render(<ReportView report={report} />);
+    setup();
     expect(screen.getByText(/Автозапис пацієнтів/)).toBeInTheDocument();
     expect(
       screen.getByText(/Хочу автоматизувати запис пацієнтів/)

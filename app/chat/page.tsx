@@ -1,18 +1,41 @@
 "use client";
 
-import { useState } from "react";
-import type { ChatMessage, Language, Report } from "@/lib/types";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import type { ChatMessage, Report } from "@/lib/types";
 import { ReportView } from "@/components/ReportView";
+import { useI18n } from "@/components/LanguageProvider";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const KICKOFF: Record<Language, string> = {
-  uk: "Почати",
-  ru: "Начать",
-  en: "Start",
-  de: "Starten",
-};
+function LogoMark() {
+  return (
+    <span className="grid h-7 w-7 place-items-center rounded-[9px] bg-gradient-to-br from-accent to-accent2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="white" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
+}
+
+function Typing({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-2 text-sm text-muted">
+      <span className="flex gap-1">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="h-1.5 w-1.5 rounded-full bg-muted"
+            style={{ animation: "blink 1.2s infinite", animationDelay: `${i * 0.2}s` }}
+          />
+        ))}
+      </span>
+      {label}…
+    </div>
+  );
+}
 
 export default function ChatPage() {
-  const [language, setLanguage] = useState<Language>("uk");
+  const { t, lang } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,28 +43,13 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  async function generateReport() {
-    setReportLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/report", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language, messages }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(`Помилка звіту ${res.status}: ${data?.error ?? "unknown"}`);
-        return;
-      }
-      setReport(data.report ?? null);
-    } catch {
-      setError("Не вдалося згенерувати звіт.");
-    } finally {
-      setReportLoading(false);
-    }
-  }
+  const started = messages.length > 0;
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading, report]);
 
   async function send(history: ChatMessage[]) {
     setLoading(true);
@@ -50,15 +58,11 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language, messages: history }),
+        body: JSON.stringify({ language: lang, messages: history }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(
-          data?.error === "llm_error"
-            ? "Помилка виклику AI. Найімовірніше не заданий ANTHROPIC_API_KEY у .env.local (і перезапусти dev-сервер)."
-            : `Помилка ${res.status}: ${data?.error ?? "unknown"}`
-        );
+        setError(data?.error === "llm_error" ? t("chat.errorKey") : t("chat.errorServer"));
         return;
       }
       if (data.reply) {
@@ -66,14 +70,14 @@ export default function ChatPage() {
       }
       setDone(Boolean(data.done));
     } catch {
-      setError("Не вдалося звʼязатися із сервером.");
+      setError(t("chat.errorServer"));
     } finally {
       setLoading(false);
     }
   }
 
   function start() {
-    const history: ChatMessage[] = [{ role: "user", content: KICKOFF[language] }];
+    const history: ChatMessage[] = [{ role: "user", content: t("chat.start") }];
     setMessages(history);
     setDone(false);
     setReport(null);
@@ -81,117 +85,153 @@ export default function ChatPage() {
   }
 
   function submit() {
-    if (!input.trim() || loading) return;
-    const history: ChatMessage[] = [
-      ...messages,
-      { role: "user", content: input.trim() },
-    ];
+    if (!input.trim() || loading || done) return;
+    const history: ChatMessage[] = [...messages, { role: "user", content: input.trim() }];
     setMessages(history);
     setInput("");
     void send(history);
   }
 
+  async function generateReport() {
+    setReportLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/report", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ language: lang, messages }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(t("chat.errorReport"));
+        return;
+      }
+      setReport(data.report ?? null);
+    } catch {
+      setError(t("chat.errorReport"));
+    } finally {
+      setReportLoading(false);
+    }
+  }
+
+  // hide the synthetic kickoff message (first user turn)
+  const visible = messages.filter((m, i) => !(i === 0 && m.role === "user"));
+
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 p-6">
-      <header className="space-y-1">
-        <h1 className="text-lg font-semibold">Діагностика — тестовий екран</h1>
-        <p className="text-sm text-gray-400">
-          Обери мову → натисни <b>Start</b>. AI почне інтервʼю про твій бізнес.
-          Це чорновий екран для перевірки (дизайн — пізніше). Потрібен{" "}
-          <code>ANTHROPIC_API_KEY</code>.
-        </p>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-20 border-b border-border/70 bg-bg/80 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <LogoMark />
+            <span className="text-sm font-extrabold tracking-tight">{t("brand")}</span>
+          </Link>
+          <LanguageSwitcher />
+        </div>
       </header>
 
-      <div className="flex items-center gap-3">
-        <select
-          aria-label="language"
-          value={language}
-          onChange={(e) => setLanguage(e.target.value as Language)}
-          className="rounded border border-gray-600 bg-transparent px-2 py-1"
-        >
-          <option value="uk">UK</option>
-          <option value="ru">RU</option>
-          <option value="en">EN</option>
-          <option value="de">DE</option>
-        </select>
-        <button
-          type="button"
-          onClick={start}
-          disabled={loading}
-          className="rounded bg-white px-4 py-1 font-medium text-black disabled:opacity-50"
-        >
-          Start
-        </button>
-      </div>
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-2xl px-4 py-6">
+          {!started ? (
+            <div className="animate-in mx-auto mt-10 max-w-md rounded-3xl border border-border bg-surface p-8 text-center shadow-[0_1px_2px_rgba(11,18,32,0.04)]">
+              <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-accent to-accent2">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="white" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <p className="mt-5 text-sm leading-relaxed text-muted">{t("chat.intro")}</p>
+              <button
+                type="button"
+                onClick={start}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:opacity-95"
+              >
+                {t("chat.start")}
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {visible.map((m, i) =>
+                m.role === "assistant" ? (
+                  <div key={i} className="flex items-start gap-2.5">
+                    <span className="mt-0.5 shrink-0">
+                      <LogoMark />
+                    </span>
+                    <div className="max-w-[80%] rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-2.5 text-sm leading-relaxed shadow-[0_1px_2px_rgba(11,18,32,0.04)]">
+                      {m.content}
+                    </div>
+                  </div>
+                ) : (
+                  <div key={i} className="flex justify-end">
+                    <div className="max-w-[80%] rounded-2xl rounded-tr-sm bg-accent px-4 py-2.5 text-sm leading-relaxed text-white">
+                      {m.content}
+                    </div>
+                  </div>
+                )
+              )}
 
-      {error && (
-        <div className="rounded border border-red-500 bg-red-500/10 px-3 py-2 text-sm text-red-400">
-          {error}
+              {loading && (
+                <div className="flex items-center gap-2.5">
+                  <LogoMark />
+                  <div className="rounded-2xl rounded-tl-sm border border-border bg-surface px-4 py-3">
+                    <Typing label={t("chat.typing")} />
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="rounded-xl border border-red-300 bg-red-50 px-3.5 py-2.5 text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
+              {done && !report && (
+                <div className="pt-2">
+                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-success">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="m5 13 4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {t("chat.done")}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={generateReport}
+                    disabled={reportLoading}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent to-accent2 px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 disabled:opacity-60"
+                  >
+                    {reportLoading ? t("chat.generating") : t("chat.generate")}
+                  </button>
+                </div>
+              )}
+
+              {report && <ReportView report={report} />}
+
+              <div ref={bottomRef} />
+            </div>
+          )}
         </div>
-      )}
-
-      <div className="flex min-h-[300px] flex-1 flex-col gap-3 overflow-y-auto rounded border border-gray-700 p-4">
-        {messages.length === 0 && !loading && (
-          <p className="m-auto text-sm text-gray-500">
-            Натисни <b>Start</b>, щоб почати діалог.
-          </p>
-        )}
-        {messages.map((m, i) => (
-          <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
-            <span
-              className={
-                "inline-block max-w-[85%] rounded-lg px-3 py-2 text-sm " +
-                (m.role === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-100")
-              }
-            >
-              {m.content}
-            </span>
-          </div>
-        ))}
-        {loading && <div className="text-gray-400">AI друкує…</div>}
-        {done && (
-          <div className="text-sm font-medium text-green-400">
-            ✓ Інтервʼю завершено — готово до звіту (Фаза 2)
-          </div>
-        )}
       </div>
 
-      {done && !report && (
-        <button
-          type="button"
-          onClick={generateReport}
-          disabled={reportLoading}
-          className="rounded bg-green-600 px-4 py-2 font-medium text-white disabled:opacity-50"
-        >
-          {reportLoading ? "Готую звіт…" : "Згенерувати звіт"}
-        </button>
-      )}
-
-      {report && <ReportView report={report} />}
-
-      <div className="flex gap-2">
-        <input
-          aria-label="message"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
-          disabled={loading || messages.length === 0}
-          className="flex-1 rounded border border-gray-600 bg-transparent px-3 py-2 disabled:opacity-50"
-          placeholder={
-            messages.length === 0 ? "Спершу натисни Start…" : "Твоя відповідь…"
-          }
-        />
-        <button
-          type="button"
-          onClick={submit}
-          disabled={loading || messages.length === 0}
-          className="rounded bg-white px-4 py-2 font-medium text-black disabled:opacity-50"
-        >
-          Send
-        </button>
+      {/* input bar */}
+      <div className="sticky bottom-0 border-t border-border/70 bg-bg/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-3">
+          <input
+            aria-label="message"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+            disabled={loading || !started || done}
+            className="flex-1 rounded-full border border-border bg-surface px-4 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15 disabled:opacity-50"
+            placeholder={started ? t("chat.placeholder") : t("chat.placeholderStart")}
+          />
+          <button
+            type="button"
+            onClick={submit}
+            disabled={loading || !started || done || !input.trim()}
+            className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-40"
+          >
+            {t("chat.send")}
+          </button>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
