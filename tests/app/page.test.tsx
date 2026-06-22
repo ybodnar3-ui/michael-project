@@ -10,10 +10,10 @@ describe("Home (landing placeholder)", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders a start button", () => {
+  it("renders a start link to the chat", () => {
     render(<Home />);
-    expect(
-      screen.getByRole("button", { name: /start|почати|начать|starten/i })
-    ).toBeInTheDocument();
+    const link = screen.getByRole("link", { name: /start|почати|начать|starten/i });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/chat");
   });
 });

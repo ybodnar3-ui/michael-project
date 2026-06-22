@@ -16,36 +16,46 @@ export default function ChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function send(history: ChatMessage[]) {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ language, messages: history }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(
+          data?.error === "llm_error"
+            ? "Помилка виклику AI. Найімовірніше не заданий ANTHROPIC_API_KEY у .env.local (і перезапусти dev-сервер)."
+            : `Помилка ${res.status}: ${data?.error ?? "unknown"}`
+        );
+        return;
+      }
       if (data.reply) {
         setMessages([...history, { role: "assistant", content: data.reply }]);
       }
       setDone(Boolean(data.done));
+    } catch {
+      setError("Не вдалося звʼязатися із сервером.");
     } finally {
       setLoading(false);
     }
   }
 
   function start() {
-    const history: ChatMessage[] = [
-      { role: "user", content: KICKOFF[language] },
-    ];
+    const history: ChatMessage[] = [{ role: "user", content: KICKOFF[language] }];
     setMessages(history);
     setDone(false);
     void send(history);
   }
 
   function submit() {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
     const history: ChatMessage[] = [
       ...messages,
       { role: "user", content: input.trim() },
@@ -57,12 +67,21 @@ export default function ChatPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-4 p-6">
+      <header className="space-y-1">
+        <h1 className="text-lg font-semibold">Діагностика — тестовий екран</h1>
+        <p className="text-sm text-gray-400">
+          Обери мову → натисни <b>Start</b>. AI почне інтервʼю про твій бізнес.
+          Це чорновий екран для перевірки (дизайн — пізніше). Потрібен{" "}
+          <code>ANTHROPIC_API_KEY</code>.
+        </p>
+      </header>
+
       <div className="flex items-center gap-3">
         <select
           aria-label="language"
           value={language}
           onChange={(e) => setLanguage(e.target.value as Language)}
-          className="rounded border px-2 py-1"
+          className="rounded border border-gray-600 bg-transparent px-2 py-1"
         >
           <option value="uk">UK</option>
           <option value="ru">RU</option>
@@ -72,25 +91,45 @@ export default function ChatPage() {
         <button
           type="button"
           onClick={start}
-          className="rounded bg-black px-3 py-1 text-white"
+          disabled={loading}
+          className="rounded bg-white px-4 py-1 font-medium text-black disabled:opacity-50"
         >
           Start
         </button>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto rounded border p-4">
+      {error && (
+        <div className="rounded border border-red-500 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      <div className="flex min-h-[300px] flex-1 flex-col gap-3 overflow-y-auto rounded border border-gray-700 p-4">
+        {messages.length === 0 && !loading && (
+          <p className="m-auto text-sm text-gray-500">
+            Натисни <b>Start</b>, щоб почати діалог.
+          </p>
+        )}
         {messages.map((m, i) => (
-          <div
-            key={i}
-            className={m.role === "user" ? "text-right" : "text-left"}
-          >
-            <span className="inline-block rounded-lg bg-gray-100 px-3 py-2">
+          <div key={i} className={m.role === "user" ? "text-right" : "text-left"}>
+            <span
+              className={
+                "inline-block max-w-[85%] rounded-lg px-3 py-2 text-sm " +
+                (m.role === "user"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-700 text-gray-100")
+              }
+            >
               {m.content}
             </span>
           </div>
         ))}
-        {loading && <div className="text-gray-400">…</div>}
-        {done && <div className="text-green-600">[READY for report]</div>}
+        {loading && <div className="text-gray-400">AI друкує…</div>}
+        {done && (
+          <div className="text-sm font-medium text-green-400">
+            ✓ Інтервʼю завершено — готово до звіту (Фаза 2)
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2">
@@ -99,14 +138,17 @@ export default function ChatPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
-          className="flex-1 rounded border px-3 py-2"
-          placeholder="..."
+          disabled={loading || messages.length === 0}
+          className="flex-1 rounded border border-gray-600 bg-transparent px-3 py-2 disabled:opacity-50"
+          placeholder={
+            messages.length === 0 ? "Спершу натисни Start…" : "Твоя відповідь…"
+          }
         />
         <button
           type="button"
           onClick={submit}
-          disabled={loading}
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-50"
+          disabled={loading || messages.length === 0}
+          className="rounded bg-white px-4 py-2 font-medium text-black disabled:opacity-50"
         >
           Send
         </button>
