@@ -30,3 +30,16 @@ export interface Report {
   priority_recommendation: string;
   next_step: string;
 }
+
+export type Channel = "email" | "phone" | "telegram";
+
+export interface LeadInfo {
+  name: string;
+  contact: string;
+  channel: Channel;
+  language: Language;
+}
+
+export interface LeadRequest extends LeadInfo {
+  messages: ChatMessage[];
+}
