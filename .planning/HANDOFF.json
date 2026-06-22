@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T10:17:29.978Z",
+  "timestamp": "2026-06-22T10:22:44.330Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -17,18 +17,10 @@
   "decisions": [],
   "uncommitted_files": [
     {
-      "status": "M",
-      "path": ".planning/HANDOFF.json"
-    },
-    {
-      "status": "M",
-      "path": "app/page.tsx"
-    },
-    {
       "status": "??",
-      "path": "tests/app/"
+      "path": "docs/superpowers/plans/2026-06-22-phase-1-diagnostic-brain.md"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n61b677b feat: add /api/health endpoint\n34991e4 test: set up Vitest + Testing Library toolchain\nc247712 chore: track .env.example (un-ignore from .env* rule)\nc3e7b00 chore: add .env.example and project README\n49fbe39 chore: scaffold Next.js app (TS, Tailwind, App Router)"
+  "context_notes": "Recent commits:\ndc06b57 docs: add Vercel deployment guide\n696651a feat: replace default page with branded landing placeholder\n61b677b feat: add /api/health endpoint\n34991e4 test: set up Vitest + Testing Library toolchain\nc247712 chore: track .env.example (un-ignore from .env* rule)"
 }
