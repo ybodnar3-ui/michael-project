@@ -2,9 +2,13 @@ import { NextResponse } from "next/server";
 import { buildReportPrompt } from "@/lib/prompt";
 import { validateChatInput } from "@/lib/limits";
 import { runReport } from "@/lib/claude";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 import type { ChatRequest, ChatMessage } from "@/lib/types";
 
 export async function POST(req: Request) {
+  if (!rateLimit(`report:${clientIp(req)}`, 10, 60_000).ok) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
   let body: unknown;
   try {
     body = await req.json();

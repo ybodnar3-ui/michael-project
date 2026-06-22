@@ -3,9 +3,15 @@ import { buildReportPrompt } from "@/lib/prompt";
 import { validateLeadInput } from "@/lib/lead";
 import { runReport } from "@/lib/claude";
 import { notifyLead } from "@/lib/notify";
+import { verifyTurnstile } from "@/lib/turnstile";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 import type { LeadRequest, ChatMessage } from "@/lib/types";
 
 export async function POST(req: Request) {
+  const ip = clientIp(req);
+  if (!rateLimit(`lead:${ip}`, 10, 60_000).ok) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
   let body: unknown;
   try {
     body = await req.json();
@@ -16,6 +22,11 @@ export async function POST(req: Request) {
   const validation = validateLeadInput(body);
   if (!validation.ok) {
     return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+
+  const token = (body as { turnstileToken?: string }).turnstileToken;
+  if (!(await verifyTurnstile(token, ip))) {
+    return NextResponse.json({ error: "turnstile" }, { status: 403 });
   }
 
   const { name, contact, channel, language, messages } = body as LeadRequest;

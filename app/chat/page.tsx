@@ -6,6 +6,7 @@ import type { ChatMessage, Channel, Report } from "@/lib/types";
 import { ReportView } from "@/components/ReportView";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Turnstile } from "@/components/Turnstile";
 
 function LogoMark() {
   return (
@@ -46,6 +47,7 @@ export default function ChatPage() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [channel, setChannel] = useState<Channel>("telegram");
+  const [tsToken, setTsToken] = useState("");
   const [fieldError, setFieldError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -112,7 +114,14 @@ export default function ChatPage() {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, contact, channel, language: lang, messages }),
+        body: JSON.stringify({
+          name,
+          contact,
+          channel,
+          language: lang,
+          messages,
+          turnstileToken: tsToken,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -241,6 +250,8 @@ export default function ChatPage() {
                     {fieldError && (
                       <p className="text-sm text-red-600">{fieldError}</p>
                     )}
+
+                    <Turnstile onToken={setTsToken} />
 
                     <button
                       type="button"
