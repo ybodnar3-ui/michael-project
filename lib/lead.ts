@@ -1,11 +1,9 @@
 import type { Channel } from "./types";
-import { validateChatInput } from "./limits";
+import { validateChatInput, type ValidationResult } from "./limits";
 
 const CHANNELS: Channel[] = ["email", "phone", "telegram"];
 
-export type LeadValidation = { ok: true } | { ok: false; error: string };
-
-export function validateLeadInput(body: unknown): LeadValidation {
+export function validateLeadInput(body: unknown): ValidationResult {
   if (!body || typeof body !== "object") return { ok: false, error: "bad body" };
   const b = body as Record<string, unknown>;
 

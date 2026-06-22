@@ -47,4 +47,22 @@ describe("POST /api/chat", () => {
     expect(res.status).toBe(400);
     expect(runChat).not.toHaveBeenCalled();
   });
+
+  it("returns 429 after exceeding the per-IP rate limit", async () => {
+    (runChat as ReturnType<typeof vi.fn>).mockResolvedValue("ok");
+    const reqWithIp = () =>
+      new Request("http://localhost/api/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-real-ip": "203.0.113.99" },
+        body: JSON.stringify(valid),
+      });
+    // chat limit is 30/min — fill the bucket
+    for (let i = 0; i < 30; i++) {
+      expect((await POST(reqWithIp())).status).toBe(200);
+    }
+    (runChat as ReturnType<typeof vi.fn>).mockClear();
+    const blocked = await POST(reqWithIp());
+    expect(blocked.status).toBe(429);
+    expect(runChat).not.toHaveBeenCalled();
+  });
 });

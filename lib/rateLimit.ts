@@ -1,5 +1,15 @@
 const buckets = new Map<string, { count: number; reset: number }>();
 
+// Bound memory: when the map grows large, drop entries whose window has
+// already elapsed. (In-memory limiter is per-instance / best-effort — a
+// distributed store is the real fix, tracked in the backlog.)
+function sweep(now: number) {
+  if (buckets.size < 5000) return;
+  for (const [key, b] of buckets) {
+    if (now > b.reset) buckets.delete(key);
+  }
+}
+
 export function rateLimit(
   key: string,
   limit: number,
@@ -8,6 +18,7 @@ export function rateLimit(
 ): { ok: boolean; remaining: number } {
   const b = buckets.get(key);
   if (!b || now > b.reset) {
+    sweep(now);
     buckets.set(key, { count: 1, reset: now + windowMs });
     return { ok: true, remaining: limit - 1 };
   }
@@ -17,7 +28,11 @@ export function rateLimit(
 }
 
 export function clientIp(req: Request): string {
+  // Prefer x-real-ip (set by the platform/proxy to the true client) over the
+  // user-influenceable x-forwarded-for chain.
+  const real = req.headers.get("x-real-ip");
+  if (real) return real.trim();
   const xff = req.headers.get("x-forwarded-for");
   if (xff) return xff.split(",")[0].trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
+  return "unknown";
 }

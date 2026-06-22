@@ -7,6 +7,7 @@ import { ReportView } from "@/components/ReportView";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Turnstile } from "@/components/Turnstile";
+import { postJson, statusErrorKey } from "@/lib/clientApi";
 
 function LogoMark() {
   return (
@@ -33,34 +34,6 @@ function Typing({ label }: { label: string }) {
       {label}…
     </div>
   );
-}
-
-async function postJson(
-  url: string,
-  body: unknown,
-  timeoutMs = 75000
-): Promise<{ ok: boolean; status: number; data: Record<string, unknown> }> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(body),
-      signal: ctrl.signal,
-    });
-    const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-    return { ok: res.ok, status: res.status, data };
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-function statusErrorKey(status: number, apiError?: unknown): string {
-  if (status === 429) return "chat.errorRate";
-  if (status === 403) return "chat.errorBot";
-  if (apiError === "llm_error") return "chat.errorKey";
-  return "chat.errorServer";
 }
 
 export default function ChatPage() {

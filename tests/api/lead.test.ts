@@ -5,9 +5,13 @@ vi.mock("@/lib/notify", () => ({
   notifyLead: vi.fn().mockResolvedValue({ telegram: true, email: false }),
   notifyOwner: vi.fn().mockResolvedValue({ telegram: true, email: false }),
 }));
+vi.mock("@/lib/turnstile", () => ({
+  verifyTurnstile: vi.fn().mockResolvedValue(true),
+}));
 
 import { runReport } from "@/lib/claude";
 import { notifyLead, notifyOwner } from "@/lib/notify";
+import { verifyTurnstile } from "@/lib/turnstile";
 import { POST } from "@/app/api/lead/route";
 import type { Report } from "@/lib/types";
 
@@ -75,6 +79,14 @@ describe("POST /api/lead", () => {
     const res = await POST(req(lead));
     expect(res.status).toBe(500);
     expect(notifyOwner).toHaveBeenCalledTimes(1);
+    expect(notifyLead).not.toHaveBeenCalled();
+  });
+
+  it("blocks with 403 when Turnstile verification fails (no model/notify)", async () => {
+    (verifyTurnstile as ReturnType<typeof vi.fn>).mockResolvedValueOnce(false);
+    const res = await POST(req(lead));
+    expect(res.status).toBe(403);
+    expect(runReport).not.toHaveBeenCalled();
     expect(notifyLead).not.toHaveBeenCalled();
   });
 });

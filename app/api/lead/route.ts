@@ -52,19 +52,33 @@ export async function POST(req: Request) {
     // Report failed — but DON'T lose the lead. Alert the owner so they
     // can follow up manually.
     log.error("lead.report_failed", { error: String(e), name, channel, language });
-    await notifyOwner(
+    const alerted = await notifyOwner(
       `⚠️ Лід отримано, але звіт не згенерувався.\n\n👤 ${name}\n📞 ${contact} (${channel})\n🌐 ${language}\n\nЗвернись до людини вручну.`
-    ).catch(() => {});
+    ).catch((err) => {
+      log.error("lead.fallback_notify_threw", { error: String(err) });
+      return { telegram: false, email: false };
+    });
+    if (!alerted.telegram && !alerted.email) {
+      // Worst case: report failed AND owner couldn't be reached. Log the full
+      // contact so the lead is at least recoverable from logs.
+      log.error("lead.fallback_notify_failed", { name, contact, channel, language });
+    }
     return NextResponse.json({ error: "llm_error" }, { status: 500 });
   }
 
   const result = await notifyLead(lead, report);
+  if (!result.telegram && !result.email) {
+    // Lead captured but the owner was not reached on any channel. Log the full
+    // contact (recoverable) and tell the client so success isn't faked.
+    log.error("lead.notify_all_failed", { name, contact, channel, language });
+    return NextResponse.json({ report, warning: "notify_failed" }, { status: 200 });
+  }
   log.info("lead.captured", {
     name,
     channel,
     language,
-    telegram: Boolean(result?.telegram),
-    email: Boolean(result?.email),
+    telegram: result.telegram,
+    email: result.email,
   });
 
   return NextResponse.json({ report });

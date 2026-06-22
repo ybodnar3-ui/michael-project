@@ -41,4 +41,20 @@ describe("validateChatInput", () => {
     });
     expect(r.ok).toBe(false);
   });
+
+  it("rejects an unknown role", () => {
+    const r = validateChatInput({
+      ...ok,
+      messages: [{ role: "system", content: "hi" }],
+    });
+    expect(r.ok).toBe(false);
+  });
+
+  it("rejects non-string content", () => {
+    const r = validateChatInput({
+      ...ok,
+      messages: [{ role: "user", content: 42 }],
+    });
+    expect(r.ok).toBe(false);
+  });
 });

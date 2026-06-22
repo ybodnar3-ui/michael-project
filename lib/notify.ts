@@ -63,7 +63,10 @@ async function sendEmail(text: string): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_EMAIL_TO;
   const from = process.env.LEAD_EMAIL_FROM;
-  if (!key || !to || !from) return false;
+  if (!key || !to || !from) {
+    log.warn("notify.email.skipped", { reason: "no_creds" });
+    return false;
+  }
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

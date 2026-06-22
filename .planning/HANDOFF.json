@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T12:19:24.863Z",
+  "timestamp": "2026-06-22T12:31:56.909Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -22,14 +22,10 @@
     },
     {
       "status": "M",
-      "path": "app/api/chat/route.ts"
-    },
-    {
-      "status": "M",
       "path": "app/api/lead/route.ts"
     },
     {
-      "status": "M",
+      "status": "D",
       "path": "app/api/report/route.ts"
     },
     {
@@ -38,7 +34,11 @@
     },
     {
       "status": "M",
-      "path": "lib/i18n.ts"
+      "path": "lib/claude.ts"
+    },
+    {
+      "status": "M",
+      "path": "lib/lead.ts"
     },
     {
       "status": "M",
@@ -46,17 +46,37 @@
     },
     {
       "status": "M",
-      "path": "tests/api/lead.test.ts"
+      "path": "lib/rateLimit.ts"
     },
     {
       "status": "M",
-      "path": "tests/lib/notify.test.ts"
+      "path": "lib/turnstile.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/api/chat.test.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/api/lead.test.ts"
+    },
+    {
+      "status": "D",
+      "path": "tests/api/report.test.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/lib/limits.test.ts"
     },
     {
       "status": "??",
-      "path": "lib/log.ts"
+      "path": "lib/clientApi.ts"
+    },
+    {
+      "status": "??",
+      "path": "tests/lib/client-api.test.ts"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)\na654b6a feat: add favicon (logo) and rich metadata/OpenGraph\na1983c4 test: stub IntersectionObserver in jsdom setup\n3eb9a48 feat: smoother scroll reveals on landing (IntersectionObserver)\n8909638 feat: add IntersectionObserver Reveal component"
+  "context_notes": "Recent commits:\ncdf62ac harden: error handling, structured logging, failure-mode fixes\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)\na654b6a feat: add favicon (logo) and rich metadata/OpenGraph\na1983c4 test: stub IntersectionObserver in jsdom setup\n3eb9a48 feat: smoother scroll reveals on landing (IntersectionObserver)"
 }
