@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T10:09:10.474Z",
+  "timestamp": "2026-06-22T10:11:28.765Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -17,10 +17,10 @@
   "decisions": [],
   "uncommitted_files": [
     {
-      "status": "M",
-      "path": "docs/superpowers/specs/2026-06-22-ai-automation-diagnostic-design.md"
+      "status": "??",
+      "path": "docs/superpowers/plans/"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n4b0e357 docs: add AI Automation Diagnostic design document\n9637d6d Initial commit"
+  "context_notes": "Recent commits:\nbb7c2fc docs: make diagnostic multilingual (UK/RU/EN/DE)\n4b0e357 docs: add AI Automation Diagnostic design document\n9637d6d Initial commit"
 }
