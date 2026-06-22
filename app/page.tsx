@@ -3,16 +3,13 @@
 import Link from "next/link";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Reveal } from "@/components/Reveal";
 
 function LogoMark() {
   return (
     <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-gradient-to-br from-accent to-accent2 shadow-sm">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"
-          fill="white"
-          strokeLinejoin="round"
-        />
+        <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" fill="white" strokeLinejoin="round" />
       </svg>
     </span>
   );
@@ -28,7 +25,7 @@ function StepCard({
   desc: string;
 }) {
   return (
-    <div className="reveal rounded-2xl border border-border bg-surface p-6 shadow-[0_1px_2px_rgba(11,18,32,0.04)]">
+    <div className="h-full rounded-2xl border border-border bg-surface p-6 shadow-[0_1px_2px_rgba(11,18,32,0.04)]">
       <div className="grid h-9 w-9 place-items-center rounded-full bg-accentsoft text-sm font-extrabold text-accent">
         {n}
       </div>
@@ -48,7 +45,7 @@ function BenefitCard({
   desc: string;
 }) {
   return (
-    <div className="reveal rounded-2xl border border-border bg-surface p-6 shadow-[0_1px_2px_rgba(11,18,32,0.04)] transition hover:shadow-[0_10px_30px_rgba(11,18,32,0.07)]">
+    <div className="h-full rounded-2xl border border-border bg-surface p-6 shadow-[0_1px_2px_rgba(11,18,32,0.04)] transition hover:shadow-[0_10px_30px_rgba(11,18,32,0.07)]">
       <div className="grid h-10 w-10 place-items-center rounded-xl bg-accentsoft text-accent">
         {icon}
       </div>
@@ -87,7 +84,6 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          {/* aura */}
           <div
             aria-hidden
             className="pointer-events-none absolute left-1/2 top-[-180px] h-[440px] w-[760px] -translate-x-1/2 rounded-full opacity-60 blur-[110px]"
@@ -96,7 +92,6 @@ export default function Home() {
                 "radial-gradient(closest-side, rgba(67,56,202,0.20), rgba(37,99,235,0.12), transparent)",
             }}
           />
-          {/* dotted texture */}
           <div
             aria-hidden
             className="pointer-events-none absolute inset-0 opacity-[0.5]"
@@ -160,90 +155,96 @@ export default function Home() {
 
         {/* How it works */}
         <section className="mx-auto max-w-6xl px-5 py-16">
-          <h2 className="reveal text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
-            {t("how.title")}
-          </h2>
+          <Reveal>
+            <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
+              {t("how.title")}
+            </h2>
+          </Reveal>
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
-            <StepCard
-              n={1}
-              title={t("how.step1.title")}
-              desc={t("how.step1.desc")}
-            />
-            <StepCard
-              n={2}
-              title={t("how.step2.title")}
-              desc={t("how.step2.desc")}
-            />
-            <StepCard
-              n={3}
-              title={t("how.step3.title")}
-              desc={t("how.step3.desc")}
-            />
+            <Reveal delay={0}>
+              <StepCard n={1} title={t("how.step1.title")} desc={t("how.step1.desc")} />
+            </Reveal>
+            <Reveal delay={100}>
+              <StepCard n={2} title={t("how.step2.title")} desc={t("how.step2.desc")} />
+            </Reveal>
+            <Reveal delay={200}>
+              <StepCard n={3} title={t("how.step3.title")} desc={t("how.step3.desc")} />
+            </Reveal>
           </div>
         </section>
 
         {/* Benefits */}
         <section className="mx-auto max-w-6xl px-5 py-16">
-          <h2 className="reveal text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
-            {t("benefits.title")}
-          </h2>
+          <Reveal>
+            <h2 className="text-center text-2xl font-extrabold tracking-tight sm:text-3xl">
+              {t("benefits.title")}
+            </h2>
+          </Reveal>
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
-            <BenefitCard
-              title={t("benefits.1.title")}
-              desc={t("benefits.1.desc")}
-              icon={
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="m5 13 4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              }
-            />
-            <BenefitCard
-              title={t("benefits.2.title")}
-              desc={t("benefits.2.desc")}
-              icon={
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              }
-            />
-            <BenefitCard
-              title={t("benefits.3.title")}
-              desc={t("benefits.3.desc")}
-              icon={
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              }
-            />
+            <Reveal delay={0}>
+              <BenefitCard
+                title={t("benefits.1.title")}
+                desc={t("benefits.1.desc")}
+                icon={
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="m5 13 4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                }
+              />
+            </Reveal>
+            <Reveal delay={100}>
+              <BenefitCard
+                title={t("benefits.2.title")}
+                desc={t("benefits.2.desc")}
+                icon={
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M3 3v18h18M7 14l4-4 3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                }
+              />
+            </Reveal>
+            <Reveal delay={200}>
+              <BenefitCard
+                title={t("benefits.3.title")}
+                desc={t("benefits.3.desc")}
+                icon={
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                }
+              />
+            </Reveal>
           </div>
         </section>
 
         {/* CTA */}
         <section className="mx-auto max-w-6xl px-5 pb-20 pt-4">
-          <div className="reveal relative overflow-hidden rounded-3xl bg-ink px-6 py-14 text-center text-white">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-70"
-              style={{
-                background:
-                  "radial-gradient(600px 200px at 50% 0%, rgba(67,56,202,0.55), transparent)",
-              }}
-            />
-            <div className="relative">
-              <h2 className="mx-auto max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
-                {t("cta.title")}
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
-                {t("cta.subtitle")}
-              </p>
-              <Link
-                href="/chat"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-semibold text-ink transition hover:-translate-y-0.5"
-              >
-                {t("cta.button")}
-              </Link>
+          <Reveal>
+            <div className="relative overflow-hidden rounded-3xl bg-ink px-6 py-14 text-center text-white">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-70"
+                style={{
+                  background:
+                    "radial-gradient(600px 200px at 50% 0%, rgba(67,56,202,0.55), transparent)",
+                }}
+              />
+              <div className="relative">
+                <h2 className="mx-auto max-w-xl text-2xl font-extrabold tracking-tight sm:text-3xl">
+                  {t("cta.title")}
+                </h2>
+                <p className="mx-auto mt-3 max-w-md text-sm text-white/70">
+                  {t("cta.subtitle")}
+                </p>
+                <Link
+                  href="/chat"
+                  className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-semibold text-ink transition hover:-translate-y-0.5"
+                >
+                  {t("cta.button")}
+                </Link>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
 
