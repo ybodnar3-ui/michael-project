@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import type { ChatMessage, Report } from "@/lib/types";
+import type { ChatMessage, Channel, Report } from "@/lib/types";
 import { ReportView } from "@/components/ReportView";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -42,7 +42,11 @@ export default function ChatPage() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
-  const [reportLoading, setReportLoading] = useState(false);
+  const [leadLoading, setLeadLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [channel, setChannel] = useState<Channel>("telegram");
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const started = messages.length > 0;
@@ -92,14 +96,23 @@ export default function ChatPage() {
     void send(history);
   }
 
-  async function generateReport() {
-    setReportLoading(true);
+  async function submitLead() {
+    if (!name.trim()) {
+      setFieldError(t("lead.errorName"));
+      return;
+    }
+    if (!contact.trim()) {
+      setFieldError(t("lead.errorContact"));
+      return;
+    }
+    setFieldError(null);
+    setLeadLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/report", {
+      const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language: lang, messages }),
+        body: JSON.stringify({ name, contact, channel, language: lang, messages }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -110,7 +123,7 @@ export default function ChatPage() {
     } catch {
       setError(t("chat.errorReport"));
     } finally {
-      setReportLoading(false);
+      setLeadLoading(false);
     }
   }
 
@@ -184,21 +197,60 @@ export default function ChatPage() {
               )}
 
               {done && !report && (
-                <div className="pt-2">
-                  <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-success">
+                <div className="animate-in rounded-3xl border border-border bg-surface p-6 shadow-[0_1px_2px_rgba(11,18,32,0.04)]">
+                  <div className="mb-4 flex items-center gap-2 text-sm font-semibold text-success">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
                       <path d="m5 13 4 4L19 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                     {t("chat.done")}
                   </div>
-                  <button
-                    type="button"
-                    onClick={generateReport}
-                    disabled={reportLoading}
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-accent to-accent2 px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 disabled:opacity-60"
-                  >
-                    {reportLoading ? t("chat.generating") : t("chat.generate")}
-                  </button>
+
+                  <h3 className="text-base font-extrabold tracking-tight">
+                    {t("lead.title")}
+                  </h3>
+                  <p className="mt-1 text-sm text-muted">{t("lead.subtitle")}</p>
+
+                  <div className="mt-4 space-y-3">
+                    <input
+                      aria-label="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder={t("lead.name")}
+                      className="w-full rounded-xl border border-border bg-bg px-3.5 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15"
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        aria-label="contact"
+                        value={contact}
+                        onChange={(e) => setContact(e.target.value)}
+                        placeholder={t("lead.contact")}
+                        className="flex-1 rounded-xl border border-border bg-bg px-3.5 py-2.5 text-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/15"
+                      />
+                      <select
+                        aria-label="channel"
+                        value={channel}
+                        onChange={(e) => setChannel(e.target.value as Channel)}
+                        className="rounded-xl border border-border bg-bg px-2.5 py-2.5 text-sm outline-none focus:border-accent"
+                      >
+                        <option value="telegram">{t("lead.channel.telegram")}</option>
+                        <option value="phone">{t("lead.channel.phone")}</option>
+                        <option value="email">{t("lead.channel.email")}</option>
+                      </select>
+                    </div>
+
+                    {fieldError && (
+                      <p className="text-sm text-red-600">{fieldError}</p>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={submitLead}
+                      disabled={leadLoading}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-accent to-accent2 px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(37,99,235,0.25)] transition hover:-translate-y-0.5 disabled:opacity-60"
+                    >
+                      {leadLoading ? t("lead.submitting") : t("lead.submit")}
+                    </button>
+                  </div>
                 </div>
               )}
 

@@ -71,6 +71,18 @@ const en: Dict = {
   "report.priority": "Where to start",
   "report.copy": "Copy request",
   "report.copied": "Copied",
+
+  "lead.title": "Where should we send your report?",
+  "lead.subtitle": "Leave your contact and we'll prepare your personal audit.",
+  "lead.name": "Name",
+  "lead.contact": "Email, phone or Telegram",
+  "lead.channel.telegram": "Telegram",
+  "lead.channel.phone": "Phone",
+  "lead.channel.email": "Email",
+  "lead.submit": "Get the report",
+  "lead.submitting": "Preparing report…",
+  "lead.errorName": "Please enter your name",
+  "lead.errorContact": "Please enter a contact",
 };
 
 const uk: Dict = {
@@ -133,6 +145,18 @@ const uk: Dict = {
   "report.priority": "З чого почати",
   "report.copy": "Скопіювати запит",
   "report.copied": "Скопійовано",
+
+  "lead.title": "Куди надіслати звіт?",
+  "lead.subtitle": "Залиш контакт — підготуємо твій персональний аудит.",
+  "lead.name": "Ім'я",
+  "lead.contact": "Email, телефон або Telegram",
+  "lead.channel.telegram": "Telegram",
+  "lead.channel.phone": "Телефон",
+  "lead.channel.email": "Email",
+  "lead.submit": "Отримати звіт",
+  "lead.submitting": "Готую звіт…",
+  "lead.errorName": "Вкажи ім'я",
+  "lead.errorContact": "Вкажи контакт",
 };
 
 const ru: Dict = {
@@ -195,6 +219,18 @@ const ru: Dict = {
   "report.priority": "С чего начать",
   "report.copy": "Скопировать запрос",
   "report.copied": "Скопировано",
+
+  "lead.title": "Куда отправить отчёт?",
+  "lead.subtitle": "Оставь контакт — подготовим твой персональный аудит.",
+  "lead.name": "Имя",
+  "lead.contact": "Email, телефон или Telegram",
+  "lead.channel.telegram": "Telegram",
+  "lead.channel.phone": "Телефон",
+  "lead.channel.email": "Email",
+  "lead.submit": "Получить отчёт",
+  "lead.submitting": "Готовлю отчёт…",
+  "lead.errorName": "Укажи имя",
+  "lead.errorContact": "Укажи контакт",
 };
 
 const de: Dict = {
@@ -257,6 +293,18 @@ const de: Dict = {
   "report.priority": "Wo anfangen",
   "report.copy": "Anfrage kopieren",
   "report.copied": "Kopiert",
+
+  "lead.title": "Wohin sollen wir deinen Report senden?",
+  "lead.subtitle": "Hinterlasse deinen Kontakt — wir erstellen dein persönliches Audit.",
+  "lead.name": "Name",
+  "lead.contact": "E-Mail, Telefon oder Telegram",
+  "lead.channel.telegram": "Telegram",
+  "lead.channel.phone": "Telefon",
+  "lead.channel.email": "E-Mail",
+  "lead.submit": "Report erhalten",
+  "lead.submitting": "Report wird erstellt…",
+  "lead.errorName": "Bitte Namen eingeben",
+  "lead.errorContact": "Bitte Kontakt eingeben",
 };
 
 const messages: Record<Language, Dict> = { uk, ru, en, de };
