@@ -20,12 +20,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored = localStorage.getItem("lang") as Language | null;
-    if (stored && SUPPORTED.includes(stored)) {
-      setLangState(stored);
-      return;
-    }
     const nav = navigator.language.slice(0, 2) as Language;
-    if (SUPPORTED.includes(nav)) setLangState(nav);
+    const next =
+      stored && SUPPORTED.includes(stored)
+        ? stored
+        : SUPPORTED.includes(nav)
+          ? nav
+          : null;
+    // Reading a client-only persisted preference on mount; intentional.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (next) setLangState(next);
   }, []);
 
   function setLang(l: Language) {
