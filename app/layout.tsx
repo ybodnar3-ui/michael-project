@@ -10,9 +10,20 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "AI Automation Diagnostic",
+  metadataBase: new URL("https://michael-project.vercel.app"),
+  applicationName: "AI Automation Diagnostic",
+  title: {
+    default: "AI Automation Diagnostic",
+    template: "%s · AI Automation Diagnostic",
+  },
   description:
     "Дізнайся за 5 хвилин, що у твоєму бізнесі можна автоматизувати за допомогою AI.",
+  openGraph: {
+    title: "AI Automation Diagnostic",
+    description:
+      "Дізнайся за 5 хвилин, що у твоєму бізнесі можна автоматизувати за допомогою AI.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
