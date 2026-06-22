@@ -1,19 +1,25 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { LanguageProvider } from "@/components/LanguageProvider";
 import Home from "@/app/page";
 
-describe("Home (landing placeholder)", () => {
-  it("renders the product heading", () => {
-    render(<Home />);
-    expect(
-      screen.getByRole("heading", { name: /automation/i })
-    ).toBeInTheDocument();
+function setup() {
+  return render(
+    <LanguageProvider>
+      <Home />
+    </LanguageProvider>
+  );
+}
+
+describe("Home (landing)", () => {
+  it("renders a hero headline", () => {
+    setup();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
   });
 
-  it("renders a start link to the chat", () => {
-    render(<Home />);
-    const link = screen.getByRole("link", { name: /start|почати|начать|starten/i });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute("href", "/chat");
+  it("links to the diagnostic chat", () => {
+    setup();
+    const links = screen.getAllByRole("link");
+    expect(links.some((l) => l.getAttribute("href") === "/chat")).toBe(true);
   });
 });
