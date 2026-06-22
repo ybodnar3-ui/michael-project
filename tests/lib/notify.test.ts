@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatLeadMessage } from "@/lib/notify";
+import { formatLeadMessage, notifyOwner } from "@/lib/notify";
 import type { LeadInfo, Report } from "@/lib/types";
 
 const lead: LeadInfo = {
@@ -36,5 +36,15 @@ describe("formatLeadMessage", () => {
     const msg = formatLeadMessage(lead, report);
     expect(msg).toContain("Доставка води.");
     expect(msg).toContain("Хочу чат-бота для замовлень.");
+  });
+});
+
+describe("notifyOwner", () => {
+  it("returns false for all channels when no credentials are configured", async () => {
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    delete process.env.TELEGRAM_CHAT_ID;
+    delete process.env.RESEND_API_KEY;
+    const result = await notifyOwner("test");
+    expect(result).toEqual({ telegram: false, email: false });
   });
 });

@@ -35,6 +35,34 @@ function Typing({ label }: { label: string }) {
   );
 }
 
+async function postJson(
+  url: string,
+  body: unknown,
+  timeoutMs = 75000
+): Promise<{ ok: boolean; status: number; data: Record<string, unknown> }> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    return { ok: res.ok, status: res.status, data };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function statusErrorKey(status: number, apiError?: unknown): string {
+  if (status === 429) return "chat.errorRate";
+  if (status === 403) return "chat.errorBot";
+  if (apiError === "llm_error") return "chat.errorKey";
+  return "chat.errorServer";
+}
+
 export default function ChatPage() {
   const { t, lang } = useI18n();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -61,22 +89,27 @@ export default function ChatPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ language: lang, messages: history }),
+      const { ok, status, data } = await postJson("/api/chat", {
+        language: lang,
+        messages: history,
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data?.error === "llm_error" ? t("chat.errorKey") : t("chat.errorServer"));
+      if (!ok) {
+        setError(t(statusErrorKey(status, data.error)));
         return;
       }
       if (data.reply) {
-        setMessages([...history, { role: "assistant", content: data.reply }]);
+        setMessages([
+          ...history,
+          { role: "assistant", content: String(data.reply) },
+        ]);
       }
       setDone(Boolean(data.done));
-    } catch {
-      setError(t("chat.errorServer"));
+    } catch (e) {
+      setError(
+        e instanceof DOMException && e.name === "AbortError"
+          ? t("chat.errorTimeout")
+          : t("chat.errorServer")
+      );
     } finally {
       setLoading(false);
     }
@@ -111,26 +144,29 @@ export default function ChatPage() {
     setLeadLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/lead", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          name,
-          contact,
-          channel,
-          language: lang,
-          messages,
-          turnstileToken: tsToken,
-        }),
+      const { ok, status, data } = await postJson("/api/lead", {
+        name,
+        contact,
+        channel,
+        language: lang,
+        messages,
+        turnstileToken: tsToken,
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(t("chat.errorReport"));
+      if (!ok) {
+        setError(
+          status === 429 || status === 403
+            ? t(statusErrorKey(status))
+            : t("chat.errorReport")
+        );
         return;
       }
-      setReport(data.report ?? null);
-    } catch {
-      setError(t("chat.errorReport"));
+      setReport((data.report as Report) ?? null);
+    } catch (e) {
+      setError(
+        e instanceof DOMException && e.name === "AbortError"
+          ? t("chat.errorTimeout")
+          : t("chat.errorReport")
+      );
     } finally {
       setLeadLoading(false);
     }

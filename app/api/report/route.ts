@@ -3,7 +3,10 @@ import { buildReportPrompt } from "@/lib/prompt";
 import { validateChatInput } from "@/lib/limits";
 import { runReport } from "@/lib/claude";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
+import { log } from "@/lib/log";
 import type { ChatRequest, ChatMessage } from "@/lib/types";
+
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   if (!rateLimit(`report:${clientIp(req)}`, 10, 60_000).ok) {
@@ -34,7 +37,8 @@ export async function POST(req: Request) {
   try {
     const report = await runReport(system, withTrigger);
     return NextResponse.json({ report });
-  } catch {
+  } catch (e) {
+    log.error("report.llm_error", { error: String(e) });
     return NextResponse.json({ error: "llm_error" }, { status: 500 });
   }
 }

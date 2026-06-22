@@ -3,7 +3,10 @@ import { buildSystemPrompt } from "@/lib/prompt";
 import { validateChatInput } from "@/lib/limits";
 import { runChat } from "@/lib/claude";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
+import { log } from "@/lib/log";
 import type { ChatRequest } from "@/lib/types";
+
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   if (!rateLimit(`chat:${clientIp(req)}`, 30, 60_000).ok) {
@@ -27,7 +30,8 @@ export async function POST(req: Request) {
   let raw: string;
   try {
     raw = await runChat(system, messages);
-  } catch {
+  } catch (e) {
+    log.error("chat.llm_error", { error: String(e) });
     return NextResponse.json({ error: "llm_error" }, { status: 500 });
   }
 

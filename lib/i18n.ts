@@ -60,6 +60,9 @@ const en: Dict = {
     "AI call failed. Most likely ANTHROPIC_API_KEY is missing in .env.local (restart the dev server).",
   "chat.errorServer": "Could not reach the server.",
   "chat.errorReport": "Could not generate the report.",
+  "chat.errorRate": "Too many requests. Please wait a minute and try again.",
+  "chat.errorBot": "Verification failed. Please refresh the page and try again.",
+  "chat.errorTimeout": "The request took too long. Please try again.",
 
   "report.title": "Your automation audit",
   "report.opportunities": "Automation opportunities",
@@ -134,6 +137,9 @@ const uk: Dict = {
     "Помилка виклику AI. Найімовірніше не заданий ANTHROPIC_API_KEY у .env.local (перезапусти dev-сервер).",
   "chat.errorServer": "Не вдалося звʼязатися із сервером.",
   "chat.errorReport": "Не вдалося згенерувати звіт.",
+  "chat.errorRate": "Забагато запитів. Зачекай хвилину і спробуй ще раз.",
+  "chat.errorBot": "Перевірку не пройдено. Онови сторінку і спробуй ще раз.",
+  "chat.errorTimeout": "Запит виконувався надто довго. Спробуй ще раз.",
 
   "report.title": "Твій аудит автоматизації",
   "report.opportunities": "Можливості автоматизації",
@@ -208,6 +214,9 @@ const ru: Dict = {
     "Ошибка вызова AI. Скорее всего не задан ANTHROPIC_API_KEY в .env.local (перезапусти dev-сервер).",
   "chat.errorServer": "Не удалось связаться с сервером.",
   "chat.errorReport": "Не удалось сгенерировать отчёт.",
+  "chat.errorRate": "Слишком много запросов. Подожди минуту и попробуй снова.",
+  "chat.errorBot": "Проверка не пройдена. Обнови страницу и попробуй снова.",
+  "chat.errorTimeout": "Запрос выполнялся слишком долго. Попробуй снова.",
 
   "report.title": "Твой аудит автоматизации",
   "report.opportunities": "Возможности автоматизации",
@@ -282,6 +291,9 @@ const de: Dict = {
     "KI-Aufruf fehlgeschlagen. Wahrscheinlich fehlt ANTHROPIC_API_KEY in .env.local (Dev-Server neu starten).",
   "chat.errorServer": "Server nicht erreichbar.",
   "chat.errorReport": "Report konnte nicht generiert werden.",
+  "chat.errorRate": "Zu viele Anfragen. Bitte warte eine Minute und versuche es erneut.",
+  "chat.errorBot": "Verifizierung fehlgeschlagen. Bitte lade die Seite neu und versuche es erneut.",
+  "chat.errorTimeout": "Die Anfrage hat zu lange gedauert. Bitte erneut versuchen.",
 
   "report.title": "Dein Automatisierungs-Audit",
   "report.opportunities": "Automatisierungs-Chancen",

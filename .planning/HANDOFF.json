@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T10:22:44.330Z",
+  "timestamp": "2026-06-22T12:19:24.863Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -17,10 +17,46 @@
   "decisions": [],
   "uncommitted_files": [
     {
+      "status": "M",
+      "path": ".planning/HANDOFF.json"
+    },
+    {
+      "status": "M",
+      "path": "app/api/chat/route.ts"
+    },
+    {
+      "status": "M",
+      "path": "app/api/lead/route.ts"
+    },
+    {
+      "status": "M",
+      "path": "app/api/report/route.ts"
+    },
+    {
+      "status": "M",
+      "path": "app/chat/page.tsx"
+    },
+    {
+      "status": "M",
+      "path": "lib/i18n.ts"
+    },
+    {
+      "status": "M",
+      "path": "lib/notify.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/api/lead.test.ts"
+    },
+    {
+      "status": "M",
+      "path": "tests/lib/notify.test.ts"
+    },
+    {
       "status": "??",
-      "path": "docs/superpowers/plans/2026-06-22-phase-1-diagnostic-brain.md"
+      "path": "lib/log.ts"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\ndc06b57 docs: add Vercel deployment guide\n696651a feat: replace default page with branded landing placeholder\n61b677b feat: add /api/health endpoint\n34991e4 test: set up Vitest + Testing Library toolchain\nc247712 chore: track .env.example (un-ignore from .env* rule)"
+  "context_notes": "Recent commits:\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)\na654b6a feat: add favicon (logo) and rich metadata/OpenGraph\na1983c4 test: stub IntersectionObserver in jsdom setup\n3eb9a48 feat: smoother scroll reveals on landing (IntersectionObserver)\n8909638 feat: add IntersectionObserver Reveal component"
 }

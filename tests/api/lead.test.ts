@@ -1,10 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@/lib/claude", () => ({ runReport: vi.fn() }));
-vi.mock("@/lib/notify", () => ({ notifyLead: vi.fn() }));
+vi.mock("@/lib/notify", () => ({
+  notifyLead: vi.fn().mockResolvedValue({ telegram: true, email: false }),
+  notifyOwner: vi.fn().mockResolvedValue({ telegram: true, email: false }),
+}));
 
 import { runReport } from "@/lib/claude";
-import { notifyLead } from "@/lib/notify";
+import { notifyLead, notifyOwner } from "@/lib/notify";
 import { POST } from "@/app/api/lead/route";
 import type { Report } from "@/lib/types";
 
@@ -64,6 +67,14 @@ describe("POST /api/lead", () => {
     const res = await POST(req({ ...lead, name: "" }));
     expect(res.status).toBe(400);
     expect(runReport).not.toHaveBeenCalled();
+    expect(notifyLead).not.toHaveBeenCalled();
+  });
+
+  it("on report failure, still alerts the owner and returns 500", async () => {
+    (runReport as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("boom"));
+    const res = await POST(req(lead));
+    expect(res.status).toBe(500);
+    expect(notifyOwner).toHaveBeenCalledTimes(1);
     expect(notifyLead).not.toHaveBeenCalled();
   });
 });
