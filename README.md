@@ -14,7 +14,7 @@ Next.js (App Router) · TypeScript · Tailwind · Vitest · Claude API
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:3100  (3000 зайнятий іншим проєктом)
 npm run build      # production build
 npm test           # запустити тести
 ```
