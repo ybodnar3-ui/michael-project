@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-23T11:37:26.873Z",
+  "timestamp": "2026-06-23T12:57:42.235Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -18,21 +18,21 @@
   "uncommitted_files": [
     {
       "status": "M",
-      "path": ".env.example"
-    },
-    {
-      "status": "M",
       "path": ".planning/HANDOFF.json"
     },
     {
       "status": "M",
-      "path": "components/ReportView.tsx"
+      "path": "app/chat/page.tsx"
     },
     {
-      "status": "M",
-      "path": "lib/i18n.ts"
+      "status": "??",
+      "path": "lib/sessionStore.ts"
+    },
+    {
+      "status": "??",
+      "path": "tests/lib/session-store.test.ts"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\nced6c34 review(round 2): surface notify-failure to client; validate report elements\n5e63fd3 harden(24/7): add timeouts to outbound calls\n788b681 review: address code-review findings (robustness & observability)\ncdf62ac harden: error handling, structured logging, failure-mode fixes\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)"
+  "context_notes": "Recent commits:\nc8bd95e feat: add owner-contact CTA button in report (configurable via env)\nced6c34 review(round 2): surface notify-failure to client; validate report elements\n5e63fd3 harden(24/7): add timeouts to outbound calls\n788b681 review: address code-review findings (robustness & observability)\ncdf62ac harden: error handling, structured logging, failure-mode fixes"
 }

@@ -8,6 +8,7 @@ import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Turnstile } from "@/components/Turnstile";
 import { postJson, statusErrorKey } from "@/lib/clientApi";
+import { loadSession, saveSession, clearSession } from "@/lib/sessionStore";
 
 function LogoMark() {
   return (
@@ -59,6 +60,23 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading, report]);
 
+  // Restore a previous session on open (close site -> reopen -> resume).
+  useEffect(() => {
+    const s = loadSession();
+    if (!s || s.messages.length === 0) return;
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setMessages(s.messages);
+    setDone(s.done);
+    setReport(s.report);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  // Persist the session as it progresses (per-browser; cross-device sync
+  // would need a server DB — backlog).
+  useEffect(() => {
+    if (messages.length > 0) saveSession({ messages, done, report });
+  }, [messages, done, report]);
+
   async function send(history: ChatMessage[]) {
     setLoading(true);
     setError(null);
@@ -96,6 +114,16 @@ export default function ChatPage() {
     setReport(null);
     setNotice(null);
     void send(history);
+  }
+
+  function startOver() {
+    clearSession();
+    setMessages([]);
+    setDone(false);
+    setReport(null);
+    setNotice(null);
+    setError(null);
+    setInput("");
   }
 
   function submit() {
@@ -162,7 +190,18 @@ export default function ChatPage() {
             <LogoMark />
             <span className="text-sm font-extrabold tracking-tight">{t("brand")}</span>
           </Link>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            {started && (
+              <button
+                type="button"
+                onClick={startOver}
+                className="rounded-full px-3 py-1 text-xs font-semibold text-muted transition hover:text-ink"
+              >
+                ↺ {t("chat.restart")}
+              </button>
+            )}
+            <LanguageSwitcher />
+          </div>
         </div>
       </header>
 
