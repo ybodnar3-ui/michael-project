@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "AI Automation Diagnostic" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - img [ref=e7]
+          - generic [ref=e9]: AI Automation Diagnostic
+        - generic [ref=e11]:
+          - button "UK" [ref=e12]
+          - button "RU" [ref=e13]
+          - button "EN" [pressed] [ref=e14]
+          - button "DE" [ref=e15]
+    - generic [ref=e18]:
+      - img [ref=e20]
+      - paragraph [ref=e22]: Tell us about your business — the AI will ask a few questions and prepare a personal report.
+      - button "Start" [ref=e23]
+    - generic [ref=e25]:
+      - textbox "message" [disabled] [ref=e26]:
+        - /placeholder: Press Start to begin…
+      - button "Send" [disabled] [ref=e27]
+  - alert [ref=e28]

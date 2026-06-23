@@ -3,6 +3,7 @@ import { buildReportPrompt } from "@/lib/prompt";
 import { validateLeadInput } from "@/lib/lead";
 import { runReport } from "@/lib/claude";
 import { notifyLead, notifyOwner } from "@/lib/notify";
+import { saveSession } from "@/lib/db";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 import { log } from "@/lib/log";
@@ -66,12 +67,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "llm_error" }, { status: 500 });
   }
 
-  const result = await notifyLead(lead, report);
+  // Persist the session so the user gets a cross-device resume link.
+  const sessionId = await saveSession({
+    language,
+    messages,
+    report,
+    name,
+    contact,
+    channel,
+  });
+  const host = req.headers.get("host");
+  const link = sessionId && host ? `https://${host}/s/${sessionId}` : null;
+
+  const result = await notifyLead(lead, report, link);
   if (!result.telegram && !result.email) {
     // Lead captured but the owner was not reached on any channel. Log the full
     // contact (recoverable) and tell the client so success isn't faked.
     log.error("lead.notify_all_failed", { name, contact, channel, language });
-    return NextResponse.json({ report, warning: "notify_failed" }, { status: 200 });
+    return NextResponse.json(
+      { report, sessionId, warning: "notify_failed" },
+      { status: 200 }
+    );
   }
   log.info("lead.captured", {
     name,
@@ -79,7 +95,8 @@ export async function POST(req: Request) {
     language,
     telegram: result.telegram,
     email: result.email,
+    saved: Boolean(sessionId),
   });
 
-  return NextResponse.json({ report });
+  return NextResponse.json({ report, sessionId });
 }

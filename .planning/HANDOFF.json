@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-23T12:57:42.235Z",
+  "timestamp": "2026-06-23T13:30:26.955Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -22,17 +22,57 @@
     },
     {
       "status": "M",
+      "path": "app/api/lead/route.ts"
+    },
+    {
+      "status": "M",
       "path": "app/chat/page.tsx"
     },
     {
-      "status": "??",
-      "path": "lib/sessionStore.ts"
+      "status": "M",
+      "path": "lib/i18n.ts"
+    },
+    {
+      "status": "M",
+      "path": "lib/notify.ts"
+    },
+    {
+      "status": "M",
+      "path": "package-lock.json"
+    },
+    {
+      "status": "M",
+      "path": "package.json"
     },
     {
       "status": "??",
-      "path": "tests/lib/session-store.test.ts"
+      "path": ".playwright-mcp/"
+    },
+    {
+      "status": "??",
+      "path": "app/s/"
+    },
+    {
+      "status": "??",
+      "path": "components/ResumeLink.tsx"
+    },
+    {
+      "status": "??",
+      "path": "components/SavedReport.tsx"
+    },
+    {
+      "status": "??",
+      "path": "lib/db.ts"
+    },
+    {
+      "status": "??",
+      "path": "scripts/"
+    },
+    {
+      "status": "??",
+      "path": "tests/lib/db.test.ts"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\nc8bd95e feat: add owner-contact CTA button in report (configurable via env)\nced6c34 review(round 2): surface notify-failure to client; validate report elements\n5e63fd3 harden(24/7): add timeouts to outbound calls\n788b681 review: address code-review findings (robustness & observability)\ncdf62ac harden: error handling, structured logging, failure-mode fixes"
+  "context_notes": "Recent commits:\n4364f08 docs: add resume-link (DB-backed sessions) plan\n359929e feat: persist chat session in browser (resume on reopen) + start-over\nc8bd95e feat: add owner-contact CTA button in report (configurable via env)\nced6c34 review(round 2): surface notify-failure to client; validate report elements\n5e63fd3 harden(24/7): add timeouts to outbound calls"
 }

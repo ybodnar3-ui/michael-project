@@ -75,6 +75,10 @@ const en: Dict = {
   "report.copy": "Copy request",
   "report.copied": "Copied",
   "report.contact": "Discuss on Telegram",
+  "report.savedLink": "Your report link (open from any device):",
+  "report.copyLink": "Copy link",
+  "report.linkCopied": "Copied",
+  "saved.notFound": "This report was not found. The link may be invalid or expired.",
 
   "lead.title": "Where should we send your report?",
   "lead.subtitle": "Leave your contact and we'll prepare your personal audit.",
@@ -155,6 +159,10 @@ const uk: Dict = {
   "report.copy": "Скопіювати запит",
   "report.copied": "Скопійовано",
   "report.contact": "Обговорити в Telegram",
+  "report.savedLink": "Посилання на твій звіт (відкриється з будь-якого пристрою):",
+  "report.copyLink": "Скопіювати посилання",
+  "report.linkCopied": "Скопійовано",
+  "saved.notFound": "Звіт не знайдено. Можливо, посилання недійсне або застаріло.",
 
   "lead.title": "Куди надіслати звіт?",
   "lead.subtitle": "Залиш контакт — підготуємо твій персональний аудит.",
@@ -235,6 +243,10 @@ const ru: Dict = {
   "report.copy": "Скопировать запрос",
   "report.copied": "Скопировано",
   "report.contact": "Обсудить в Telegram",
+  "report.savedLink": "Ссылка на твой отчёт (открой с любого устройства):",
+  "report.copyLink": "Скопировать ссылку",
+  "report.linkCopied": "Скопировано",
+  "saved.notFound": "Отчёт не найден. Возможно, ссылка недействительна или устарела.",
 
   "lead.title": "Куда отправить отчёт?",
   "lead.subtitle": "Оставь контакт — подготовим твой персональный аудит.",
@@ -315,6 +327,10 @@ const de: Dict = {
   "report.copy": "Anfrage kopieren",
   "report.copied": "Kopiert",
   "report.contact": "Auf Telegram besprechen",
+  "report.savedLink": "Link zu deinem Report (von jedem Gerät öffnen):",
+  "report.copyLink": "Link kopieren",
+  "report.linkCopied": "Kopiert",
+  "saved.notFound": "Report nicht gefunden. Der Link ist möglicherweise ungültig oder abgelaufen.",
 
   "lead.title": "Wohin sollen wir deinen Report senden?",
   "lead.subtitle": "Hinterlasse deinen Kontakt — wir erstellen dein persönliches Audit.",

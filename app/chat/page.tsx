@@ -9,6 +9,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Turnstile } from "@/components/Turnstile";
 import { postJson, statusErrorKey } from "@/lib/clientApi";
 import { loadSession, saveSession, clearSession } from "@/lib/sessionStore";
+import { ResumeLink } from "@/components/ResumeLink";
 
 function LogoMark() {
   return (
@@ -52,6 +53,7 @@ export default function ChatPage() {
   const [tsToken, setTsToken] = useState("");
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const started = messages.length > 0;
@@ -113,6 +115,7 @@ export default function ChatPage() {
     setDone(false);
     setReport(null);
     setNotice(null);
+    setSessionId(null);
     void send(history);
   }
 
@@ -124,6 +127,7 @@ export default function ChatPage() {
     setNotice(null);
     setError(null);
     setInput("");
+    setSessionId(null);
   }
 
   function submit() {
@@ -165,6 +169,7 @@ export default function ChatPage() {
         return;
       }
       setReport((data.report as Report) ?? null);
+      setSessionId((data.sessionId as string) ?? null);
       // Lead saved + report shown, but the owner could not be reached on any
       // channel — tell the visitor a manual follow-up may be slower.
       if (data.warning === "notify_failed") setNotice(t("lead.warnNotifyDelayed"));
@@ -324,6 +329,8 @@ export default function ChatPage() {
                   {notice}
                 </div>
               )}
+
+              {sessionId && <ResumeLink id={sessionId} />}
 
               {report && <ReportView report={report} />}
 

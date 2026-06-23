@@ -111,7 +111,12 @@ export async function notifyOwner(
 
 export async function notifyLead(
   lead: LeadInfo,
-  report: Report
+  report: Report,
+  link?: string | null
 ): Promise<{ telegram: boolean; email: boolean }> {
-  return notifyOwner(formatLeadMessage(lead, report));
+  const base = formatLeadMessage(lead, report);
+  const text = link
+    ? `${base}\n\n🔗 Звіт (відкриється з будь-якого пристрою): ${link}`
+    : base;
+  return notifyOwner(text);
 }
