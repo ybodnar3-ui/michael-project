@@ -1,4 +1,5 @@
 import { log } from "./log";
+import { fetchWithTimeout } from "./fetchTimeout";
 
 export async function verifyTurnstile(
   token: string | undefined,
@@ -14,7 +15,7 @@ export async function verifyTurnstile(
   }
   if (!token) return false;
   try {
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
         method: "POST",

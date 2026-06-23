@@ -1,5 +1,6 @@
 import type { LeadInfo, Report } from "./types";
 import { log } from "./log";
+import { fetchWithTimeout } from "./fetchTimeout";
 
 const TELEGRAM_LIMIT = 3900; // Telegram hard limit is 4096; keep margin.
 
@@ -35,15 +36,18 @@ async function sendTelegram(text: string): Promise<boolean> {
     return false;
   }
   try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chat,
-        text: truncate(text, TELEGRAM_LIMIT),
-        disable_web_page_preview: true,
-      }),
-    });
+    const res = await fetchWithTimeout(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chat,
+          text: truncate(text, TELEGRAM_LIMIT),
+          disable_web_page_preview: true,
+        }),
+      }
+    );
     if (!res.ok) {
       const body = await res.text().catch(() => "");
       log.error("notify.telegram.failed", {
@@ -68,7 +72,7 @@ async function sendEmail(text: string): Promise<boolean> {
     return false;
   }
   try {
-    const res = await fetch("https://api.resend.com/emails", {
+    const res = await fetchWithTimeout("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         authorization: `Bearer ${key}`,

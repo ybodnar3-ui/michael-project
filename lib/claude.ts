@@ -18,7 +18,11 @@ function isReport(x: unknown): x is Report {
 let client: Anthropic | null = null;
 
 function getClient(): Anthropic {
-  if (!client) client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
+  if (!client) {
+    // Explicit timeout so a stuck LLM call fails fast instead of hanging for
+    // the SDK default (~10 min) — important for an always-on server.
+    client = new Anthropic({ timeout: 60_000, maxRetries: 2 });
+  }
   return client;
 }
 

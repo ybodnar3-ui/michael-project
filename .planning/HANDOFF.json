@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-06-22T12:31:56.909Z",
+  "timestamp": "2026-06-23T07:36:44.300Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -22,23 +22,7 @@
     },
     {
       "status": "M",
-      "path": "app/api/lead/route.ts"
-    },
-    {
-      "status": "D",
-      "path": "app/api/report/route.ts"
-    },
-    {
-      "status": "M",
-      "path": "app/chat/page.tsx"
-    },
-    {
-      "status": "M",
       "path": "lib/claude.ts"
-    },
-    {
-      "status": "M",
-      "path": "lib/lead.ts"
     },
     {
       "status": "M",
@@ -46,37 +30,13 @@
     },
     {
       "status": "M",
-      "path": "lib/rateLimit.ts"
-    },
-    {
-      "status": "M",
       "path": "lib/turnstile.ts"
     },
     {
-      "status": "M",
-      "path": "tests/api/chat.test.ts"
-    },
-    {
-      "status": "M",
-      "path": "tests/api/lead.test.ts"
-    },
-    {
-      "status": "D",
-      "path": "tests/api/report.test.ts"
-    },
-    {
-      "status": "M",
-      "path": "tests/lib/limits.test.ts"
-    },
-    {
       "status": "??",
-      "path": "lib/clientApi.ts"
-    },
-    {
-      "status": "??",
-      "path": "tests/lib/client-api.test.ts"
+      "path": "lib/fetchTimeout.ts"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\ncdf62ac harden: error handling, structured logging, failure-mode fixes\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)\na654b6a feat: add favicon (logo) and rich metadata/OpenGraph\na1983c4 test: stub IntersectionObserver in jsdom setup\n3eb9a48 feat: smoother scroll reveals on landing (IntersectionObserver)"
+  "context_notes": "Recent commits:\n788b681 review: address code-review findings (robustness & observability)\ncdf62ac harden: error handling, structured logging, failure-mode fixes\n7fd5f72 chore: satisfy lint (single setState on mount in language provider)\na654b6a feat: add favicon (logo) and rich metadata/OpenGraph\na1983c4 test: stub IntersectionObserver in jsdom setup"
 }
