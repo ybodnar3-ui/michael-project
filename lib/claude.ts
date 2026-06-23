@@ -3,6 +3,19 @@ import type { ChatMessage, Report } from "./types";
 import { REPORT_SCHEMA } from "./reportSchema";
 import { log } from "./log";
 
+function isOpportunity(x: unknown): boolean {
+  if (!x || typeof x !== "object") return false;
+  const o = x as Record<string, unknown>;
+  return (
+    typeof o.title === "string" &&
+    typeof o.problem === "string" &&
+    typeof o.solution === "string" &&
+    typeof o.ai_capability === "string" &&
+    typeof o.estimated_impact === "string" &&
+    typeof o.request_to_specialist === "string"
+  );
+}
+
 function isReport(x: unknown): x is Report {
   if (!x || typeof x !== "object") return false;
   const r = x as Record<string, unknown>;
@@ -10,6 +23,7 @@ function isReport(x: unknown): x is Report {
     typeof r.business_summary === "string" &&
     Array.isArray(r.automation_opportunities) &&
     r.automation_opportunities.length > 0 &&
+    r.automation_opportunities.every(isOpportunity) &&
     typeof r.priority_recommendation === "string" &&
     typeof r.next_step === "string"
   );
@@ -81,7 +95,7 @@ export async function runReport(
   if (!isReport(parsed)) {
     // Valid JSON but wrong shape — fail here instead of crashing later in
     // the notifier (e.g. .map on a missing automation_opportunities).
-    log.error("report.invalid_shape", { sample: text.slice(0, 500) });
+    log.error("report.invalid_shape", { sample: text.slice(0, 500), length: text.length });
     throw new Error("report_invalid_shape");
   }
   return parsed;

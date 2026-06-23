@@ -82,6 +82,19 @@ describe("POST /api/lead", () => {
     expect(notifyLead).not.toHaveBeenCalled();
   });
 
+  it("returns 200 with a warning when the owner could not be notified", async () => {
+    (runReport as ReturnType<typeof vi.fn>).mockResolvedValue(sample);
+    (notifyLead as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      telegram: false,
+      email: false,
+    });
+    const res = await POST(req(lead));
+    const body = await res.json();
+    expect(res.status).toBe(200);
+    expect(body.warning).toBe("notify_failed");
+    expect(body.report).toEqual(sample);
+  });
+
   it("blocks with 403 when Turnstile verification fails (no model/notify)", async () => {
     (verifyTurnstile as ReturnType<typeof vi.fn>).mockResolvedValueOnce(false);
     const res = await POST(req(lead));

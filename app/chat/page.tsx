@@ -50,6 +50,7 @@ export default function ChatPage() {
   const [channel, setChannel] = useState<Channel>("telegram");
   const [tsToken, setTsToken] = useState("");
   const [fieldError, setFieldError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const started = messages.length > 0;
@@ -93,6 +94,7 @@ export default function ChatPage() {
     setMessages(history);
     setDone(false);
     setReport(null);
+    setNotice(null);
     void send(history);
   }
 
@@ -114,6 +116,7 @@ export default function ChatPage() {
       return;
     }
     setFieldError(null);
+    setNotice(null);
     setLeadLoading(true);
     setError(null);
     try {
@@ -134,6 +137,9 @@ export default function ChatPage() {
         return;
       }
       setReport((data.report as Report) ?? null);
+      // Lead saved + report shown, but the owner could not be reached on any
+      // channel — tell the visitor a manual follow-up may be slower.
+      if (data.warning === "notify_failed") setNotice(t("lead.warnNotifyDelayed"));
     } catch (e) {
       setError(
         e instanceof DOMException && e.name === "AbortError"
@@ -271,6 +277,12 @@ export default function ChatPage() {
                       {leadLoading ? t("lead.submitting") : t("lead.submit")}
                     </button>
                   </div>
+                </div>
+              )}
+
+              {notice && (
+                <div className="rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-sm text-amber-700">
+                  {notice}
                 </div>
               )}
 

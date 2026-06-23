@@ -86,6 +86,8 @@ const en: Dict = {
   "lead.submitting": "Preparing report…",
   "lead.errorName": "Please enter your name",
   "lead.errorContact": "Please enter a contact",
+  "lead.warnNotifyDelayed":
+    "Got it — we have your request. A follow-up may take a little longer than usual.",
 };
 
 const uk: Dict = {
@@ -163,6 +165,8 @@ const uk: Dict = {
   "lead.submitting": "Готую звіт…",
   "lead.errorName": "Вкажи ім'я",
   "lead.errorContact": "Вкажи контакт",
+  "lead.warnNotifyDelayed":
+    "Готово — твій запит у нас. Відповідь може зайняти трохи більше часу, ніж зазвичай.",
 };
 
 const ru: Dict = {
@@ -240,6 +244,8 @@ const ru: Dict = {
   "lead.submitting": "Готовлю отчёт…",
   "lead.errorName": "Укажи имя",
   "lead.errorContact": "Укажи контакт",
+  "lead.warnNotifyDelayed":
+    "Готово — твой запрос у нас. Ответ может занять чуть больше времени, чем обычно.",
 };
 
 const de: Dict = {
@@ -317,6 +323,8 @@ const de: Dict = {
   "lead.submitting": "Report wird erstellt…",
   "lead.errorName": "Bitte Namen eingeben",
   "lead.errorContact": "Bitte Kontakt eingeben",
+  "lead.warnNotifyDelayed":
+    "Erledigt — wir haben deine Anfrage. Eine Rückmeldung kann etwas länger dauern als üblich.",
 };
 
 const messages: Record<Language, Dict> = { uk, ru, en, de };

@@ -28,8 +28,10 @@ export function rateLimit(
 }
 
 export function clientIp(req: Request): string {
-  // Prefer x-real-ip (set by the platform/proxy to the true client) over the
-  // user-influenceable x-forwarded-for chain.
+  // Prefer x-real-ip over the user-influenceable x-forwarded-for chain.
+  // Assumes the hosting platform sets x-real-ip to the true client and strips
+  // any client-supplied value (Vercel does); behind a proxy that doesn't, the
+  // limit is best-effort only.
   const real = req.headers.get("x-real-ip");
   if (real) return real.trim();
   const xff = req.headers.get("x-forwarded-for");
