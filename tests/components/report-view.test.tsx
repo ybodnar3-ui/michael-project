@@ -41,4 +41,18 @@ describe("ReportView", () => {
       screen.getByText(/Хочу автоматизувати запис пацієнтів/)
     ).toBeInTheDocument();
   });
+
+  it("renders a contact CTA linking to the owner when configured", () => {
+    process.env.NEXT_PUBLIC_OWNER_TELEGRAM = "https://t.me/example";
+    setup();
+    const link = screen.getByRole("link", { name: /telegram/i });
+    expect(link).toHaveAttribute("href", "https://t.me/example");
+    delete process.env.NEXT_PUBLIC_OWNER_TELEGRAM;
+  });
+
+  it("renders no contact CTA when the owner link is unset", () => {
+    delete process.env.NEXT_PUBLIC_OWNER_TELEGRAM;
+    setup();
+    expect(screen.queryByRole("link", { name: /telegram/i })).toBeNull();
+  });
 });

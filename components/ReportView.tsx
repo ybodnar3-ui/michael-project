@@ -76,6 +76,7 @@ function OpportunityCard({
 
 export function ReportView({ report }: { report: Report }) {
   const { t } = useI18n();
+  const contactUrl = process.env.NEXT_PUBLIC_OWNER_TELEGRAM;
   return (
     <section className="animate-in space-y-5">
       <div className="rounded-2xl border border-border bg-surface p-5">
@@ -102,9 +103,30 @@ export function ReportView({ report }: { report: Report }) {
         </p>
       </div>
 
-      <p className="rounded-2xl bg-ink px-5 py-4 text-center text-sm font-semibold text-white">
-        {report.next_step}
-      </p>
+      <div className="rounded-2xl bg-ink px-5 py-6 text-center text-white">
+        <p className="text-sm font-semibold leading-relaxed">
+          {report.next_step}
+        </p>
+        {contactUrl && (
+          <a
+            href={contactUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-ink transition hover:-translate-y-0.5"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path
+                d="M22 3 2 10.5l6 2.5m14-10-9 17-2.5-7m11.5-10L8 13m0 0v6l3.5-3.5"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            {t("report.contact")}
+          </a>
+        )}
+      </div>
     </section>
   );
 }

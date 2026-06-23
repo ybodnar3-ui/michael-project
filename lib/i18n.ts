@@ -74,6 +74,7 @@ const en: Dict = {
   "report.priority": "Where to start",
   "report.copy": "Copy request",
   "report.copied": "Copied",
+  "report.contact": "Discuss on Telegram",
 
   "lead.title": "Where should we send your report?",
   "lead.subtitle": "Leave your contact and we'll prepare your personal audit.",
@@ -153,6 +154,7 @@ const uk: Dict = {
   "report.priority": "З чого почати",
   "report.copy": "Скопіювати запит",
   "report.copied": "Скопійовано",
+  "report.contact": "Обговорити в Telegram",
 
   "lead.title": "Куди надіслати звіт?",
   "lead.subtitle": "Залиш контакт — підготуємо твій персональний аудит.",
@@ -232,6 +234,7 @@ const ru: Dict = {
   "report.priority": "С чего начать",
   "report.copy": "Скопировать запрос",
   "report.copied": "Скопировано",
+  "report.contact": "Обсудить в Telegram",
 
   "lead.title": "Куда отправить отчёт?",
   "lead.subtitle": "Оставь контакт — подготовим твой персональный аудит.",
@@ -311,6 +314,7 @@ const de: Dict = {
   "report.priority": "Wo anfangen",
   "report.copy": "Anfrage kopieren",
   "report.copied": "Kopiert",
+  "report.contact": "Auf Telegram besprechen",
 
   "lead.title": "Wohin sollen wir deinen Report senden?",
   "lead.subtitle": "Hinterlasse deinen Kontakt — wir erstellen dein persönliches Audit.",
